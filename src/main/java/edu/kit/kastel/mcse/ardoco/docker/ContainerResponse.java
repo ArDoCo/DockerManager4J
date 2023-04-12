@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.docker;
+package edu.kit.kastel.mcse.ardoco.docker;
 
 /**
  * Defines the response that contains the local API port of a container and the container's id.

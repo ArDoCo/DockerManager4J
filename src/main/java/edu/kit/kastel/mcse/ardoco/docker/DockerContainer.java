@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.docker;
+package edu.kit.kastel.mcse.ardoco.docker;
 
 public record DockerContainer(String id, String image, String status, String name) {
     public boolean isRunning() {

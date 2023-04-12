@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.docker;
+package edu.kit.kastel.mcse.ardoco.docker;
 
 public record DockerPortBind(int hostPort, int containerPort, boolean wildcard) {
     public boolean valid() {

@@ -7,30 +7,15 @@
     <version>0.8.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>io.github.ardoco</groupId>
   <artifactId>docker</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
   <name>Docker Handling in ArDoCo</name>
-
-  <repositories>
-    <repository>
-      <id>mavenCentral</id>
-      <url>https://repo1.maven.org/maven2/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>mavenSnapshot</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
 
   <properties>
     <docker.version>3.3.0</docker.version>
 
-	<sonar.projectKey>ArDoCo_DockerManager4J</sonar.projectKey>
+    <sonar.projectKey>ArDoCo_DockerManager4J</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <sonar.organization>ardoco</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -65,4 +50,21 @@
       <version>${docker.version}</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mavenCentral</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>mavenSnapshot</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
 </project>
