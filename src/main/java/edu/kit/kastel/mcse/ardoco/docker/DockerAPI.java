@@ -1,7 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.docker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +24,33 @@ public final class DockerAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(DockerAPI.class);
     private final DockerClient docker;
+    private final boolean remote;
 
     public DockerAPI() {
+        this.remote = false;
         DockerClient dockerInstance = null;
         try {
             DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
+            DockerHttpClient dhc = new ZerodepDockerHttpClient.Builder().dockerHost(config.getDockerHost()).build();
+            dockerInstance = DockerClientImpl.getInstance(config, dhc);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        this.docker = dockerInstance;
+        this.checkDockerExistence();
+    }
+
+    /**
+     * Create a docker API for a remote docker instance.
+     * 
+     * @param remoteIp   the ip of the remote docker host
+     * @param remotePort the port that is used by the docker service
+     */
+    public DockerAPI(String remoteIp, int remotePort) {
+        this.remote = true;
+        DockerClient dockerInstance = null;
+        try {
+            DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerHost("tcp://" + remoteIp + ":" + remotePort).build();
             DockerHttpClient dhc = new ZerodepDockerHttpClient.Builder().dockerHost(config.getDockerHost()).build();
             dockerInstance = DockerClientImpl.getInstance(config, dhc);
         } catch (Exception e) {
@@ -131,5 +156,9 @@ public final class DockerAPI {
             throw new IllegalArgumentException("Could not connect to Docker");
         var version = docker.versionCmd().exec();
         logger.info("Connected to Docker: {}", version);
+    }
+
+    public boolean isRemote() {
+        return remote;
     }
 }

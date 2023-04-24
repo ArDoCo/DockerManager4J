@@ -25,6 +25,7 @@ public class DockerManager {
 
     private final String namespacePrefix;
     private final DockerAPI dockerAPI;
+    private final String remoteIp;
 
     /**
      * Create the manager with a container name prefix.
@@ -43,8 +44,26 @@ public class DockerManager {
      * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
      */
     public DockerManager(String namespacePrefix, boolean shutdownExisting) {
+        this.remoteIp = null;
         this.namespacePrefix = namespacePrefix;
         this.dockerAPI = new DockerAPI();
+
+        if (shutdownExisting)
+            shutdownAll();
+    }
+
+    /**
+     * Create a docker manager for a remote docker instance exposed via TCP.
+     * 
+     * @param remoteIp         the ip of the docker host
+     * @param remotePort       the port of the docker service
+     * @param namespacePrefix  the container name prefix
+     * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
+     */
+    public DockerManager(String remoteIp, int remotePort, String namespacePrefix, boolean shutdownExisting) {
+        this.namespacePrefix = namespacePrefix;
+        this.remoteIp = remoteIp;
+        this.dockerAPI = new DockerAPI(remoteIp, remotePort);
 
         if (shutdownExisting)
             shutdownAll();
@@ -111,7 +130,7 @@ public class DockerManager {
         int apiPort = getNextFreePort();
         // Windows need wildcard binding somehow ..
         boolean wildcard = Optional.ofNullable(System.getenv("OS")).orElse("").toLowerCase().contains("win");
-        DockerPortBind dpb = new DockerPortBind(apiPort, port, wildcard);
+        DockerPortBind dpb = new DockerPortBind(apiPort, port, wildcard || dockerAPI.isRemote());
         String id = dockerAPI.createContainer(namespacePrefix + UUID.randomUUID(), image, dpb);
         logger.info("Created container {}", id);
 
@@ -124,7 +143,9 @@ public class DockerManager {
     private void waitForAPI(int apiPort) {
         for (int currentTry = 0; currentTry < MAX_RETRIES; currentTry++) {
             try (var client = HttpClients.createDefault()) {
-                var httpResponse = client.execute(new HttpGet("http://127.0.0.1:" + apiPort));
+                var httpResponse = client.execute(remoteIp == null ?
+                        new HttpGet("http://127.0.0.1:" + apiPort) :
+                        new HttpGet("http://" + remoteIp + ":" + apiPort));
                 if (HttpStatus.SC_SUCCESS == httpResponse.getCode()) {
                     return;
                 }
