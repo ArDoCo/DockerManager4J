@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
+import com.github.dockerjava.api.DockerClient;
+
 @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
 class RemoteDockerManagerTest {
     private static final String REMOTE_TEST_IP = "141.3.52.97";
@@ -44,6 +46,43 @@ class RemoteDockerManagerTest {
         rd.close();
         var data = response.toString();
         Assertions.assertTrue(data.contains("It works!"));
+    }
+
+    @Test
+    void testGPURemote() throws NoSuchFieldException, IllegalAccessException {
+        dm = new DockerManager(REMOTE_TEST_IP, REMOTE_TEST_PORT, "tests", true);
+        DockerAPI api = getDockerAPI();
+        DockerClient docker = getClient(api);
+        var noGPUId = api.createContainer("tests-no-gpu", "nvidia/cuda:10.2-base", new DockerPortBind(12345, 12345, false), false);
+        Assertions.assertNotNull(noGPUId);
+        var responseIdNoGPU = docker.execCreateCmd(noGPUId).withCmd("nvidia-smi").withAttachStdout(true).withAttachStderr(true).exec();
+        docker.execStartCmd(responseIdNoGPU.getId()).exec(new ResultAwaitCallback()).awaitCompletion();
+        var responseNoGPU = docker.inspectExecCmd(responseIdNoGPU.getId()).exec();
+        dm.shutdownAll();
+
+        var withGPU = api.createContainer("tests-with-gpu", "nvidia/cuda:10.2-base", new DockerPortBind(12345, 12345, false), true);
+        Assertions.assertNotNull(withGPU);
+        var responseIdWithGPU = docker.execCreateCmd(withGPU).withCmd("nvidia-smi").withAttachStdout(true).withAttachStderr(true).exec();
+        docker.execStartCmd(responseIdWithGPU.getId()).exec(new ResultAwaitCallback()).awaitCompletion();
+        var responseWithGPU = docker.inspectExecCmd(responseIdWithGPU.getId()).exec();
+        dm.shutdownAll();
+
+        // Command Not Executable 126
+        Assertions.assertEquals(126L, responseNoGPU.getExitCodeLong());
+        Assertions.assertEquals(0L, responseWithGPU.getExitCodeLong());
+
+    }
+
+    private DockerAPI getDockerAPI() throws NoSuchFieldException, IllegalAccessException {
+        var field = DockerManager.class.getDeclaredField("dockerAPI");
+        field.setAccessible(true);
+        return (DockerAPI) field.get(this.dm);
+    }
+
+    private DockerClient getClient(DockerAPI api) throws NoSuchFieldException, IllegalAccessException {
+        var field = DockerAPI.class.getDeclaredField("docker");
+        field.setAccessible(true);
+        return (DockerClient) field.get(api);
     }
 
     @AfterEach

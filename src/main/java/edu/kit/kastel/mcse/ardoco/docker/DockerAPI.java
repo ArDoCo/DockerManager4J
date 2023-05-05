@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.DeviceRequest;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
@@ -42,7 +43,7 @@ public final class DockerAPI {
 
     /**
      * Create a docker API for a remote docker instance.
-     * 
+     *
      * @param remoteIp   the ip of the remote docker host
      * @param remotePort the port that is used by the docker service
      */
@@ -114,6 +115,10 @@ public final class DockerAPI {
     }
 
     public String createContainer(String name, String image, DockerPortBind dpb) {
+        return createContainer(name, image, dpb, false);
+    }
+
+    public String createContainer(String name, String image, DockerPortBind dpb, boolean useGPU) {
         if (!dpb.valid()) {
             logger.error("DockerPortBind is invalid!");
             throw new IllegalArgumentException("Invalid Docker Port Binding");
@@ -121,8 +126,11 @@ public final class DockerAPI {
 
         var binding = (dpb.wildcard() ? "0.0.0.0:" : "127.0.0.1:") + dpb.hostPort() + ":" + dpb.containerPort();
 
-        try (var command = docker.createContainerCmd(image)) {
-            var container = command.withName(name).withHostConfig(HostConfig.newHostConfig().withPortBindings(PortBinding.parse(binding))).exec();
+        try (var command = docker.createContainerCmd(image).withTty(true).withAttachStdout(true).withAttachStderr(true)) {
+            var host = HostConfig.newHostConfig().withPortBindings(PortBinding.parse(binding));
+            if (useGPU)
+                host = host.withDeviceRequests(List.of(new DeviceRequest().withCapabilities(List.of(List.of("gpu")))));
+            var container = command.withName(name).withHostConfig(host).exec();
             docker.startContainerCmd(container.getId()).exec();
             return container.getId();
         } catch (Exception e) {

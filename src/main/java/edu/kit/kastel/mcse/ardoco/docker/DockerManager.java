@@ -26,6 +26,7 @@ public class DockerManager {
     private final String namespacePrefix;
     private final DockerAPI dockerAPI;
     private final String remoteIp;
+    private final boolean useGPU;
 
     /**
      * Create the manager with a container name prefix.
@@ -44,8 +45,21 @@ public class DockerManager {
      * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
      */
     public DockerManager(String namespacePrefix, boolean shutdownExisting) {
+        this(namespacePrefix, shutdownExisting, false);
+    }
+
+    /**
+     * Create the manager with a container name prefix and indicator to shut down all existing containers of the
+     * namespace.
+     *
+     * @param namespacePrefix  the container name prefix
+     * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
+     * @param useGPU           indicator whether GPUs shall be used or not
+     */
+    public DockerManager(String namespacePrefix, boolean shutdownExisting, boolean useGPU) {
         this.remoteIp = null;
         this.namespacePrefix = namespacePrefix;
+        this.useGPU = useGPU;
         this.dockerAPI = new DockerAPI();
 
         if (shutdownExisting)
@@ -54,15 +68,29 @@ public class DockerManager {
 
     /**
      * Create a docker manager for a remote docker instance exposed via TCP.
-     * 
+     *
      * @param remoteIp         the ip of the docker host
      * @param remotePort       the port of the docker service
      * @param namespacePrefix  the container name prefix
      * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
      */
     public DockerManager(String remoteIp, int remotePort, String namespacePrefix, boolean shutdownExisting) {
+        this(remoteIp, remotePort, namespacePrefix, shutdownExisting, false);
+    }
+
+    /**
+     * Create a docker manager for a remote docker instance exposed via TCP.
+     *
+     * @param remoteIp         the ip of the docker host
+     * @param remotePort       the port of the docker service
+     * @param namespacePrefix  the container name prefix
+     * @param shutdownExisting indicator whether existing containers need to be shut down at the beginning
+     * @param useGPU           indicator whether GPUs shall be used or not
+     */
+    public DockerManager(String remoteIp, int remotePort, String namespacePrefix, boolean shutdownExisting, boolean useGPU) {
         this.namespacePrefix = namespacePrefix;
         this.remoteIp = remoteIp;
+        this.useGPU = useGPU;
         this.dockerAPI = new DockerAPI(remoteIp, remotePort);
 
         if (shutdownExisting)
@@ -131,7 +159,7 @@ public class DockerManager {
         // Windows need wildcard binding somehow ..
         boolean wildcard = Optional.ofNullable(System.getenv("OS")).orElse("").toLowerCase().contains("win");
         DockerPortBind dpb = new DockerPortBind(apiPort, port, wildcard || dockerAPI.isRemote());
-        String id = dockerAPI.createContainer(namespacePrefix + UUID.randomUUID(), image, dpb);
+        String id = dockerAPI.createContainer(namespacePrefix + UUID.randomUUID(), image, dpb, useGPU);
         logger.info("Created container {}", id);
 
         if (waitForEndpointAvailable)
