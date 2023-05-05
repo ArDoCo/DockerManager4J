@@ -9,7 +9,7 @@
 
   <groupId>io.github.ardoco</groupId>
   <artifactId>docker</artifactId>
-  <version>0.8.1-SNAPSHOT</version>
+  <version>0.8.1</version>
   <name>Docker Handling in ArDoCo</name>
 
   <properties>
@@ -67,4 +67,8 @@
       <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
   </repositories>
+
+  <scm>
+    <tag>v0.8.1</tag>
+  </scm>
 </project>
