@@ -9,7 +9,7 @@
 
   <groupId>io.github.ardoco</groupId>
   <artifactId>docker</artifactId>
-  <version>0.8.2-SNAPSHOT</version>
+  <version>0.8.2</version>
   <name>Docker Handling in ArDoCo</name>
 
   <properties>
