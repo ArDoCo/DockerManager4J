@@ -129,7 +129,9 @@ public final class DockerAPI {
         try (var command = docker.createContainerCmd(image).withTty(true).withAttachStdout(true).withAttachStderr(true)) {
             var host = HostConfig.newHostConfig().withPortBindings(PortBinding.parse(binding));
             if (useGPU)
-                host = host.withDeviceRequests(List.of(new DeviceRequest().withCapabilities(List.of(List.of("gpu")))));
+                host = host.withDeviceRequests(List.of(new DeviceRequest() //
+                        .withCount(-1) //
+                        .withCapabilities(List.of(List.of("gpu")))));
             var container = command.withName(name).withHostConfig(host).exec();
             docker.startContainerCmd(container.getId()).exec();
             return container.getId();

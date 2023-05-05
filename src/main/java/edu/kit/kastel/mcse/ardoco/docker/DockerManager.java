@@ -3,8 +3,10 @@ package edu.kit.kastel.mcse.ardoco.docker;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -19,7 +21,8 @@ import org.slf4j.LoggerFactory;
  */
 public class DockerManager {
     private static final Logger logger = LoggerFactory.getLogger(DockerManager.class);
-    private static int lastPort = 10000;
+    private static final Random random = new SecureRandom();
+    private static int lastPort = 10000 + random.nextInt(5000);
     private static final int MAX_RETRIES = 5;
     private static final long WAIT_BETWEEN_RETRIES = 10000L;
 
@@ -238,6 +241,7 @@ public class DockerManager {
      * @throws IllegalStateException if no port is available
      */
     public static synchronized int getNextFreePort() {
+        // TODO Find a way to find a suitable remote port
         var ports = IntStream.range(lastPort + 1, 20000).toArray();
         for (int port : ports) {
             try (ServerSocket ignored = new ServerSocket(port)) {
