@@ -9,7 +9,7 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Frame;
 
 public class ResultAwaitCallback implements ResultCallback<Frame> {
-    private Semaphore lock = new Semaphore(0);
+    private final Semaphore lock = new Semaphore(0);
 
     @Override
     public void onStart(Closeable closeable) {

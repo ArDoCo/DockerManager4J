@@ -87,6 +87,8 @@ class RemoteDockerManagerTest {
 
     @AfterEach
     void tearDown() {
+        if (dm == null)
+            return;
         dm.shutdownAll();
         Assertions.assertTrue(dm.getContainerIds().isEmpty());
     }

@@ -42,8 +42,17 @@ class DockerManagerTest {
         Assertions.assertTrue(data.contains("It works!"));
     }
 
+    @Test
+    void testList() {
+        var dockerAPI = new DockerAPI();
+        dockerAPI.pullImageCmd("httpd:2.4");
+        Assertions.assertFalse(dockerAPI.listImagesCmd().isEmpty());
+    }
+
     @AfterEach
     void tearDown() {
+        if (dm == null)
+            return;
         dm.shutdownAll();
         Assertions.assertTrue(dm.getContainerIds().isEmpty());
     }
