@@ -68,7 +68,7 @@
     <spotless.version>2.37.0</spotless.version>
     <junit.version>5.10.0-M1</junit.version>
     <error-prone.version>2.19.1</error-prone.version>
-    <docker.version>3.3.0</docker.version>
+    <docker.version>3.3.1</docker.version>
 
     <sonar.projectKey>ArDoCo_DockerManager4J</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
