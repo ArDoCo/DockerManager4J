@@ -18,7 +18,7 @@ class DockerManagerTest {
     void testCreation() throws Exception {
         dm = new DockerManager("tests");
         Assertions.assertTrue(dm.getContainerIds().isEmpty());
-        var containerInformation = dm.createContainerByImage("httpd:2.4", true, true);
+        var containerInformation = dm.createContainerByImage("docker.io/httpd:2.4", true, true);
         Assertions.assertNotNull(containerInformation);
         Assertions.assertNotNull(containerInformation.containerId());
         Assertions.assertFalse(containerInformation.containerId().isBlank());
@@ -45,7 +45,7 @@ class DockerManagerTest {
     @Test
     void testList() {
         var dockerAPI = new DockerAPI();
-        dockerAPI.pullImageCmd("httpd:2.4");
+        dockerAPI.pullImageCmd("docker.io/httpd:2.4");
         Assertions.assertFalse(dockerAPI.listImagesCmd().isEmpty());
     }
 
