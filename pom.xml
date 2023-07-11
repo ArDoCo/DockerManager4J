@@ -5,6 +5,7 @@
   <artifactId>docker</artifactId>
   <version>0.11.0-SNAPSHOT</version>
   <name>Docker Handling in ArDoCo</name>
+  <description>Docker Handling for the ArDoCo Project</description>
   <url>https://github.com/ArDoCo/DockerManager4J</url>
   <licenses>
     <license>
