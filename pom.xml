@@ -65,7 +65,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
 
-    <slf4j.version>2.0.7</slf4j.version>
+    <slf4j.version>2.0.9</slf4j.version>
     <spotless.version>2.39.0</spotless.version>
     <junit.version>5.10.0</junit.version>
     <error-prone.version>2.21.1</error-prone.version>
