@@ -66,7 +66,7 @@ public final class DockerAPI {
             var images = docker.listImagesCmd().withShowAll(true).exec();
 
             return images.stream() //
-                    .filter(image -> image.getRepoTags() != null) //
+                    .filter(image -> image.getRepoTags() != null && image.getRepoTags().length != 0) //
                     .map(image -> new DockerImage(image.getParentId(), image.getRepoTags()[0], null))
                     .filter(it -> !it.isNone())
                     .toList();
