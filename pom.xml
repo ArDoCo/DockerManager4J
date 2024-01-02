@@ -65,7 +65,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
 
-    <slf4j.version>2.0.9</slf4j.version>
+    <slf4j.version>2.1.0-alpha0</slf4j.version>
     <spotless.version>2.41.1</spotless.version>
     <junit.version>5.10.1</junit.version>
     <error-prone.version>2.24.0</error-prone.version>
@@ -94,7 +94,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
-      <version>5.3</version>
+      <version>5.4-alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
