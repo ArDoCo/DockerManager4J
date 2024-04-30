@@ -67,7 +67,7 @@
 
     <slf4j.version>2.1.0-alpha1</slf4j.version>
     <spotless.version>2.43.0</spotless.version>
-    <junit.version>5.10.2</junit.version>
+    <junit.version>5.11.0-M1</junit.version>
     <error-prone.version>2.26.1</error-prone.version>
     <docker.version>3.3.6</docker.version>
 
