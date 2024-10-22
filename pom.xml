@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.ardoco</groupId>
   <artifactId>docker</artifactId>
-  <version>0.31.10</version>
+  <version>0.31.11-SNAPSHOT</version>
   <name>Docker Handling in ArDoCo</name>
   <description>Docker Handling for the ArDoCo Project</description>
   <url>https://github.com/ArDoCo/DockerManager4J</url>
