@@ -68,7 +68,7 @@
     <slf4j.version>2.1.0-alpha1</slf4j.version>
     <spotless.version>2.44.4</spotless.version>
     <junit.version>5.13.0-M2</junit.version>
-    <error-prone.version>2.34.0</error-prone.version>
+    <error-prone.version>2.37.0</error-prone.version>
     <docker.version>3.5.0</docker.version>
 
     <sonar.projectKey>ArDoCo_DockerManager4J</sonar.projectKey>
